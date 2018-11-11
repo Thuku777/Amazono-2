@@ -6,7 +6,9 @@ bodyparser = require('body-parser'),
 mongoose = require('mongoose'),
 cors=require('cors');
 var config = require('./config')
-const route = require('./routes/account')
+const mainRoute = require('./routes/main')
+const userRoute = require('./routes/account')
+const sellerRoute = require('./routes/seller')
 
 var app = express();
 
@@ -15,19 +17,13 @@ app.use(bodyparser.urlencoded({extended: false}))
 
 app.use(morgan('dev'))
 
-
-app.get('/',(req,res,next)=>{
-    res.json({
-        hello: 'this is to say hi'
-    })
-})
-
-
 app.use(cors());
-app.use('/api/account',route);
+app.use('/api',mainRoute);
+app.use('/api/account',userRoute);
+app.use('/api/seller',sellerRoute);
 
 
-mongoose.connect('mongodb://asifgptwo:727_7April@ds247058.mlab.com:47058/asifgpfirst',(err)=>{
+mongoose.connect(config.databaseURL,(err)=>{
     if(err){
         console.log('[Error]: MongoDB Connection')
         console.log(err.message)

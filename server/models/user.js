@@ -6,9 +6,9 @@ const Schema = mongoos.Schema;
 
 
 const userSchema = new Schema({
-    email: {type: String, unique: true, lowercase: true},
+    email: {type: String, unique: true, lowercase: true, required: true},
     name: String,
-    password: {type: String, unique: false, lowercase: true},
+    password: String,
     picture: String,
     address: {
         line1: String,
@@ -19,13 +19,18 @@ const userSchema = new Schema({
         state: String,
         country: String
     },
-    isSeller: Boolean,
-    created: {type: Date, required: true, default: Date.now()}
-});
+    isSeller: {
+        type: Boolean,
+        default: false
+    },
+},{timestamps: true});
 
 userSchema.pre('save',next =>{
     /*
     var user = this;
+
+    if(!user.isModified('password')) return next();
+
     if(!user.isModified('password')){
         return next();
     }
@@ -38,16 +43,17 @@ userSchema.pre('save',next =>{
    next();
 })
 
-userSchema.methods.comparePassword = (password)=>{
-    return bcrypt.compareSync(password,this.password);
+userSchema.methods.comparePassword = (password,user)=>{
+//    return bcrypt.compareSync(password,user.password);
+    return password==user.password;
 }
 
 userSchema.methods.gavatar = (size)=>{
     if(!this.size) size = 200;
-    if(!this.email) return 'http://gravatar.com/avatar/?s'+size+'&d=retro';
+    if(!this.email) return 'https://gravatar.com/avatar/?s'+size+'&d=retro';
     
     md5 = crypto.createHash('md5').update(this.email).digest('hex');
-    return 'http://gravatar.com/avatar/'+md5+'?s'+size+'&d=retro';
+    return 'https://gravatar.com/avatar/'+md5+'?s'+size+'&d=retro';
 }
 
 var User = mongoos.model('User', userSchema);
