@@ -35,7 +35,6 @@ route.post('/signup',(req,res,next)=>{
                             success: false,
                             message: 'Failed to Save: DB Error'
                         })
-                        console.log(err);
                     }
                     else{
                         var token = jwt.sign({user: user}, config.secret, {expiresIn: '7d'});
@@ -99,7 +98,6 @@ route.route('/profile')
     });
 })
 .post(jwtVerify, (req,res,next)=>{
-    console.log(req.body)
     User.findOne({_id: req.decoded.user._id},(err, user)=>{
         if(err){
             res.status(500).json({

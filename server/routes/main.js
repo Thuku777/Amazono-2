@@ -1,11 +1,12 @@
 
 const route = require('express').Router();
-const jwt = require('jsonwebtoken')
-
-const config = require('../config');
 const Category = require('../models/category');
 
+/*
+const jwt = require('jsonwebtoken')
+const config = require('../config');
 const jwtVerify = require('../middlewares/check-jwt');
+*/
 
 route.route('/categories')
 .get((req,res,next)=>{

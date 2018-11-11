@@ -48,8 +48,6 @@ router.route('/products')
     });
 })
 .post(checkJWT, upload.single('product_picture'),(req,res,next)=>{
-//    console.log(upload);
-//    console.log(req.file);
 
     let product = new Product();
     product.owner = req.decoded.user._id;
