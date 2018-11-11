@@ -1,0 +1,40 @@
+<section id="categories">
+  <div class='container p-5'>
+    <app-message></app-message>
+    <h4 class='display-4'>categories</h4>
+    <hr>
+    <div class="m-auto" *ngIf='!categories'>
+      <h1 class="text-center display-3 mt-5">
+        <i class="fa fa-spinner fa-spin"></i>
+      </h1>
+    </div>
+
+    <div class="list-group" *ngIf='categories'>
+      <a routerLink='/categories/{{category._id}}' *ngFor='let category of categories' class="list-group-item list-group-item-action">
+        {{category.name}}
+      </a>
+    </div>
+    <hr style="margin-top: 15rem;">
+    
+    <div class='card bg-light mt-5'>
+      <div class="card-body">
+        <h4 class="card-title">Add new category here</h4>
+        <hr>
+        <div class="form">
+          <div class="form-group">
+            <label>Name</label>
+            <input type="text" class='form-control' [(ngModel)]='newCategory.name'>
+          </div>
+          <div class="form-group">
+            <label>Description</label>
+            <input type="text" class='form-control' [(ngModel)]='newCategory.desc'>
+          </div>
+          <button class="btn btn-success" [disabled]='btnDisabled' (click)='addCategory()'>Submit</button>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+</section>

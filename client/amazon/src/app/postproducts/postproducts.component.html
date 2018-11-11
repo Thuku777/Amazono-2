@@ -1,0 +1,43 @@
+<section id="settings">
+    <div class="container p-5">
+      <h4 class="display-4">Add Product Here</h4>
+      <hr>
+      <app-message></app-message>
+      <div *ngIf="!product" class="m-auto">
+        <h1 class="text-center display-3 mt-5">
+          <i class="fa fa-spinner fa-spin"></i>
+        </h1>
+      </div>
+      <div *ngIf="product" class="card bg-light">
+        <div class="card-body">
+          <form>
+            <div class="form-group">
+              <label class="form-control-label">Title</label>
+              <input type="text" name="title" class="form-control" [(ngModel)]='product.title'>
+            </div>
+            <div class="form-group">
+              <label class="form-control-label">Description</label>
+              <input type="textarea" name="desc" class="form-control" [(ngModel)]='product.description'>
+            </div>
+            <div class="form-group">
+              <label class="form-control-label">Category</label>
+              <select type="text" name="category" class="form-control" [(ngModel)]='product.categoryid'>
+                <option *ngFor='let category of categories' value='{{category._id}}'>{{category.name}}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-control-label">Price</label>
+              <input type="text" name="price" class="form-control" [(ngModel)]='product.price'>
+            </div>
+            <div class="form-group">
+              <label class="form-control-label">Upload Image</label>
+              <input type="file" name="file" class="form-control-file" (change)='fileChange($event)' accept="image/*">
+            </div>
+            <button type="button" class="btn btn-success" (click)="addProduct()" [disabled]="btnDisabled">Insert</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  

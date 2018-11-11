@@ -1,0 +1,11 @@
+<!--div *ngIf="data.message" [ngClass]="setAlert()" class="alert alert-primary" role="alert">
+  {{data.massage}}
+</div-->
+
+
+<p *ngIf="data.message">
+  <ngb-alert [type]="data.messageType" [dismissible]="false">
+    {{ data.message }}
+  </ngb-alert>
+</p>
+
