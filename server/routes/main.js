@@ -19,11 +19,11 @@ route.route('/categories')
         }else{
             res.json({
                 success: true,
+                count: Object.keys(categories).length,
                 categories: categories,
             });
         }
     });
-
 })
 .post((req,res,next)=>{
     let cat = new Category();
@@ -51,6 +51,55 @@ route.route('/categories')
             }
         });
     }
+})
+
+route.route('/categories/:id')
+.get((req,res,next)=>{
+    Category.findById({_id: req.params.id},(err, category)=>{
+        if(err){
+            res.json({
+                success: false,
+                message: 'Cateogry does not exist'
+            })
+        }else{
+            res.json({
+                success: true,
+                message: 'Cateogry Found',
+                category: category
+            })
+        }
+    })
+})
+.post((req,res,next)=>{
+    Category.findById({_id: req.params.id},(err, category)=>{
+        if(err){
+            res.json({
+                success: false,
+                message: 'Cateogry does not exist'
+            })
+        }else{
+
+            if(req.body.name){
+                category.name = req.body.name;
+            }
+            if(req.body.description){
+                category.description = req.body.description;
+            }
+            category.save((err,cat)=>{
+                if(err){
+                    res.json({
+                        success: false,
+                        message: 'Failed to update Cateogry'
+                    })
+                }else{
+                    res.json({
+                        success: true,
+                        message: 'Cateogry updated successfully'
+                    })
+                }
+            })
+        }
+    })
 })
 
 module.exports = route;

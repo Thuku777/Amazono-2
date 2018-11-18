@@ -18,6 +18,20 @@ app.use(bodyparser.urlencoded({extended: false}))
 app.use(morgan('dev'))
 
 app.use(cors());
+
+/*
+/api/categories
+/api/categories/:id
+
+/api/account/signup
+/api/account/login
+/api/account/profile
+/api/account/address
+
+/api/seller/products
+/api/seller/products/:id
+/api/seller/category/:id
+*/
 app.use('/api',mainRoute);
 app.use('/api/account',userRoute);
 app.use('/api/seller',sellerRoute);

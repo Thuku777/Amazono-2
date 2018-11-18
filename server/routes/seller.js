@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const Product = require('../models/product');
+const async = require('async');
+const perPage = 5;
 
 const aws = require('aws-sdk');
 const multer = require('multer');
@@ -29,20 +31,57 @@ const upload = multer({
 
 router.route('/products')
 .get(checkJWT, (req,res,next)=>{
-    Product.find({owner: req.decoded.user._id})
-    .populate('owner')
-    .populate('category')
-    .exec((err,product)=>{
+    let pageindex = 0;
+    if(req.query.index && req.query.index>0) pageindex = req.query.index;
+    else pageindex = 0;
+
+    async.parallel([
+        (callback)=>{
+            Product.find({owner: req.decoded.user._id})
+            .skip(pageindex*perPage)
+            .limit(perPage)
+            .populate('owner')
+            .populate('category')
+            .exec((err,product)=>{
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,product)
+                }
+            })
+        },
+        (callback)=>{
+            Product.find({owner: req.decoded.user._id})
+            .count((err,count)=>{
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,count)
+                }
+            })
+        }
+    ],(err,result)=>{
         if(err){
             res.json({
-                success: false,
-                message: err
+                success: false, 
+                message: 'Error in Obtaining Product',
+                error: err
+            })
+        }else if(result[1]==0){
+            res.json({
+                success: true,
+                message: 'No Products Obtained',
+                totalCount: result[1],
+                count: result[0].length,
+                products: result[0]
             })
         }else{
             res.json({
                 success: true,
-                message: 'Success',
-                product: product
+                message: 'Successfully Obtained Products',
+                totalCount: result[1],
+                count: result[0].length,
+                products: result[0]
             })
         }
     });
@@ -86,6 +125,120 @@ router.route('/products')
     }
 });
 
+router.route('/products/:id')
+.get((req,res,next)=>{
+    Product.findById({_id: req.params.id})
+    .populate('owner')
+    .populate('category')
+    .exec((err, product)=>{
+        if(err){
+            res.json({
+                success: false,
+                message: 'Product does not exist'
+            })
+        }else{
+            res.json({
+                success: true,
+                message: 'Product Found',
+                product: product
+            })
+        }
+    })
+})
+.post((req,res,next)=>{
+    Product.findById({_id: req.params.id},(err, product)=>{
+        if(err){
+            res.json({
+                success: false,
+                message: 'Product does not exist'
+            })
+        }else{
+
+            if(req.body.name) product.name = req.body.name;
+            if(req.body.description) product.description = req.body.description;
+            if(req.body.price) product.price = req.body.price;
+
+            product.save((err,pro)=>{
+                if(err){
+                    res.json({
+                        success: false,
+                        message: 'Failed to update Product'
+                    })
+                }else{
+                    res.json({
+                        success: true,
+                        message: 'Product updated successfully'
+                    })
+                }
+            })
+        }
+    })
+})
+
+
+//All products under one category of that Seller
+router.route('/category/:id')
+.get(checkJWT,(req,res,next)=>{
+    let pageindex = 0;
+    if(req.query.index && req.query.index>0) pageindex = req.query.index;
+    else pageindex = 0;
+
+    async.parallel([
+        (callback)=>{
+            //Finding products
+            Product.find({category: req.params.id})
+            .skip(pageindex*perPage)
+            .limit(perPage)
+            .populate('category')
+            .populate('owner')
+            .exec((err,products)=>{
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,products)
+                }
+            })
+        },
+      (callback)=>{
+          //finding total product count
+        Product.find({category: req.params.id})
+        .count((err,count)=>{
+            if(err){
+                callback(err,null);
+            }else{
+                callback(null,count);
+            }
+        })
+      }
+    ],(err,result)=>{
+        if(err){
+            res.json({
+                success: false, 
+                message: 'Error in Obtaining Products',
+                error: err
+            })
+        }else if(result[1]==0){
+            res.json({
+                success: true,
+                message: 'No Product Obtained',
+                totalCount: result[1],
+                count: result[0].length,
+                products: result[0]
+            })
+        }else{
+            res.json({
+                success: true,
+                message: 'Successfully Obtained Products',
+                totalCount: result[1],
+                count: result[0].length,
+                products: result[0]
+            })
+        }
+    });
+})
+
+
+
 
 
 /**
@@ -111,6 +264,12 @@ router.route('/fake')
         success: true,
         message: 'Successful'
     });
+})
+
+router.route('/test')
+.get((req,res,next)=>{
+    callback()
+
 })
 
 module.exports = router
