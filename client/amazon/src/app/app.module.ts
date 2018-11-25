@@ -25,6 +25,7 @@ import { AddressComponent } from './address/address.component';
 import { PostproductsComponent } from './postproducts/postproducts.component';
 import { SellerProductsComponent } from './seller-products/seller-products.component';
 import { CategoryPageComponent } from './category-page/category-page.component';
+import { ProductPageComponent } from './product-page/product-page.component';
 
 
 
@@ -43,7 +44,8 @@ import { CategoryPageComponent } from './category-page/category-page.component';
     AddressComponent,
     PostproductsComponent,
     SellerProductsComponent,
-    CategoryPageComponent
+    CategoryPageComponent,
+    ProductPageComponent
   ],
   imports: [
     BrowserModule,

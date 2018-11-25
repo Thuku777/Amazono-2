@@ -1,6 +1,8 @@
 
 const route = require('express').Router();
 const Category = require('../models/category');
+const Product = require('../models/product');
+const async = require('async')
 
 /*
 const jwt = require('jsonwebtoken')
@@ -100,6 +102,66 @@ route.route('/categories/:id')
             })
         }
     })
+})
+
+route.route('/products')
+.get((req,res,next)=>{
+    /*
+    let pageindex = 0;
+    if(req.query.index && req.query.index>0) pageindex = req.query.index;
+    else pageindex = 0;
+    */
+
+    async.parallel([
+        (callback)=>{
+            Product.find()
+//            .skip(pageindex*perPage)
+//            .limit(perPage)
+            .populate('owner')
+            .populate('category')
+            .exec((err,product)=>{
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,product)
+                }
+            })
+        },
+        (callback)=>{
+            Product.find()
+            .count((err,count)=>{
+                if(err){
+                    callback(err,null)
+                }else{
+                    callback(null,count)
+                }
+            })
+        }
+    ],(err,result)=>{
+        if(err){
+            res.json({
+                success: false, 
+                message: 'Error in Obtaining Product',
+                error: err
+            })
+        }else if(result[1]==0){
+            res.json({
+                success: true,
+                message: 'No Products Obtained',
+                totalCount: result[1],
+                count: result[0].length,
+                products: result[0]
+            })
+        }else{
+            res.json({
+                success: true,
+                message: 'Successfully Obtained Products',
+                totalCount: result[1],
+                count: result[0].length,
+                products: result[0]
+            })
+        }
+    });
 })
 
 module.exports = route;

@@ -33,7 +33,7 @@ export class CategoryPageComponent implements OnInit {
       this.route.queryParams.subscribe(p=>{
         this.catName = p.name;
       })
-      this.getData();
+      this.getProducts();
     })
   }
 
@@ -48,20 +48,15 @@ export class CategoryPageComponent implements OnInit {
     return countPerPage;
   }
 
-  async getData(event?: any){
+  async getProducts(event?: any){
     if(event) this.category = null;
     try{
       let finalURL = `${productsPerCategoryURL}/${this.catId}?index=${this.page-1}`;
-      console.log(`Final URL: ${finalURL}`);
-      //passed
       let data:any = await this.rest.get(finalURL);
-      console.log(data);
       if(data.success){
         this.category = data;
-        //passed
         this.totalProducts = this.category.totalCount;
         this.obtaindProductCount = this.category.count;
-        console.log(this.category.products);
       }else{
         this.data.error(data.message)
       }

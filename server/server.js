@@ -20,14 +20,18 @@ app.use(morgan('dev'))
 app.use(cors());
 
 /*
+main:
 /api/categories
 /api/categories/:id
+/api/products
 
+account:
 /api/account/signup
 /api/account/login
 /api/account/profile
 /api/account/address
 
+seller: 
 /api/seller/products
 /api/seller/products/:id
 /api/seller/category/:id

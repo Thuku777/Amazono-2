@@ -12,6 +12,7 @@ const s3 = new aws.S3({
     secretAccessKey: 'FRvnICjFmGOB2EMgVH5w7kUCUCFgG5f2SO7/Y8II'
 })
 
+
 const checkJWT = require('../middlewares/check-jwt');
 
 const faker = require('faker');

@@ -12,6 +12,7 @@ import { CategoryComponent } from './category/category.component';
 import { PostproductsComponent } from './postproducts/postproducts.component';
 import { SellerProductsComponent } from './seller-products/seller-products.component';
 import { CategoryPageComponent } from './category-page/category-page.component';
+import { ProductPageComponent } from './product-page/product-page.component';
 
 
 const routes: Routes = [
@@ -61,6 +62,10 @@ const routes: Routes = [
         path: 'profile/products',
         component: SellerProductsComponent,
         canActivate: [AuthGuardService]
+    },
+    {
+        path: 'product/:id',
+        component: ProductPageComponent
     },
     {
         path: '**',

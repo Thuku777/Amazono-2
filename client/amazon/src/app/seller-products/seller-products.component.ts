@@ -3,6 +3,7 @@ import { DataService } from '../data.service';
 import { RestApiService } from '../rest-api.service';
 
 
+const productURL: string = 'http://localhost:3000/api/seller/products';
 @Component({
   selector: 'app-seller-products',
   templateUrl: './seller-products.component.html',
@@ -11,7 +12,6 @@ import { RestApiService } from '../rest-api.service';
 export class SellerProductsComponent implements OnInit {
 
   products: any;
-  private productURL= 'http://localhost:3000/api/seller/products';
 
   constructor(
     private data: DataService,
@@ -20,9 +20,10 @@ export class SellerProductsComponent implements OnInit {
 
   async ngOnInit() {
     try{
-      const data = await this.rest.get(this.productURL);
+
+      const data = await this.rest.get(productURL);
       if(data['success']){
-        this.products = data['product'];
+        this.products = data['products'];
       }else{
         this.data.error(data['message']);
       }
