@@ -11,6 +11,7 @@ import { AddressComponent } from './address/address.component';
 import { CategoryComponent } from './category/category.component';
 import { PostproductsComponent } from './postproducts/postproducts.component';
 import { SellerProductsComponent } from './seller-products/seller-products.component';
+import { CategoryPageComponent } from './category-page/category-page.component';
 
 
 const routes: Routes = [
@@ -21,6 +22,10 @@ const routes: Routes = [
     {
         path: 'categories',
         component: CategoryComponent
+    },
+    {
+        path: 'categories/:id',
+        component: CategoryPageComponent
     },
     {
         path: 'register',

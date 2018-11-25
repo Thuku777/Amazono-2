@@ -24,6 +24,7 @@ import { SettingComponent } from './setting/setting.component';
 import { AddressComponent } from './address/address.component';
 import { PostproductsComponent } from './postproducts/postproducts.component';
 import { SellerProductsComponent } from './seller-products/seller-products.component';
+import { CategoryPageComponent } from './category-page/category-page.component';
 
 
 
@@ -41,7 +42,8 @@ import { SellerProductsComponent } from './seller-products/seller-products.compo
     SettingComponent,
     AddressComponent,
     PostproductsComponent,
-    SellerProductsComponent
+    SellerProductsComponent,
+    CategoryPageComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,40 @@
+<section id="category-page">
+  <div class="container p-3 p-md-5">
+    <app-message></app-message>
+    <div *ngIf='!category' class="m-auto">
+      <h1 class="text-center display-3 mt-5">
+        <i class='fa fa-spinner fa-spin'></i>
+      </h1>
+    </div>
+    <h3 *ngIf='category && !obtaindProductCount' class="text-center display-2 mt-5">No product under this category</h3>
+    <div *ngIf='category && obtaindProductCount'>
+      <p>{{lower()}}-{{upper()}} products of {{totalProducts}} products under {{catName}}</p>
+      <hr>
+      <div class="product" *ngFor='let product of category.products'>
+        <div class="row">
+          <div class="col-5 col-md-2">
+            <a routerLink=''>
+              <img src="https://picsum.photos/200/300/?random" alt="https://picsum.photos/200/300" class="img-fluid img-thumbnail"/>
+            </a>
+          </div>
+          <div class="col-5 col-md-8">
+            <div class="row">
+              <div class="col-12 col-md-8">
+                <h5>
+                  <a routerLink=''>{{product.title}}</a>
+                </h5>
+                <p>
+                  <small class="text-muted">{{product.category.name}}</small>
+                </p>
+                <p>{{product.price|currency}}</p>
+                <p>{{product.description}}</p>
+              </div>
+              <div class="col-md-4"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <ngb-pagination [collectionSize]="totalProducts" [pageSize]="getPerPageConst()" [(page)]="page" (pageChange)="getProducts($event)"></ngb-pagination>
+  </div>
+</section>
