@@ -24,6 +24,8 @@ main:
 /api/categories
 /api/categories/:id
 /api/products
+/api/products/:id
+/api/products/:productid/reviews[POST]
 
 account:
 /api/account/signup

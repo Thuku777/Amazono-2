@@ -2,7 +2,9 @@
 const route = require('express').Router();
 const Category = require('../models/category');
 const Product = require('../models/product');
+const Review = require('../models/review') 
 const async = require('async')
+const jwt = require('../middlewares/check-jwt')
 
 /*
 const jwt = require('jsonwebtoken')
@@ -163,6 +165,118 @@ route.route('/products')
         }
     });
 })
+
+route.route('/products/:id')
+.get((req,res,next)=>{
+    Product.findById({_id: req.params.id})
+    .populate('category')
+    .deepPopulate('reviews.owner')
+    .exec((err, product)=>{
+        if(err){
+            res.json({
+                success: false,
+                message: 'Product does not exist'
+            })
+        }else{
+            product.owner = undefined
+            res.json({
+                success: true,
+                message: 'Product Found',
+                product: product
+            })
+        }
+    })
+})
+
+
+route.route('/products/:id/reviews')
+.get(jwt,(req,res,next)=>{
+    Product.findById({_id: req.params.id})
+    .deepPopulate('reviews.owner')
+    .exec((err,product)=>{
+        if(err){
+            res.json({
+                success: false,
+                message: 'Error in finding reviews'
+            })
+        }else{
+            if(product.reviews.length==0){
+                res.json({
+                    success: false,
+                    message: 'No Review for this product'
+                })
+            }else{
+                res.json({
+                    success: true,
+                    reviews: product.reviews
+                })
+            }
+        }
+    })
+})
+.post(jwt, (req,res,next)=>{
+    async.waterfall([
+        (callback)=>{
+            Product.findOne({_id: req.params.id},(err,product)=>{
+                if(err){
+                    res.json({
+                        success: false,
+                        message: 'No product found'
+                    })
+                }else{
+                    callback(err,product)
+                }
+            })
+        },
+        (product)=>{
+            let review = new Review();
+            try{
+                if(req.body.title){
+                    review.owner = req.decoded.user._id
+                    review.title = req.body.title;
+                    if(req.body.description) review.summary = req.body.description
+                    if(req.body.rating) review.rating = req.body.rating
+                    else review.rating = 0
+                    product.reviews.push(review._id)
+                    product.save((err)=>{
+                        if(err){
+                            res.json({
+                                success: false,
+                                message: 'Error in saving the review in product',
+                            })
+                        }else{
+                            review.save((err)=>{
+                                if(err){
+                                    res.json({
+                                        success: false,
+                                        message: 'Error in saving the review',
+                                    })
+                                }else{
+                                    res.json({
+                                        success: true,
+                                        message: 'Review saved successfully',
+                                    })
+                                }
+                            })
+                        }
+                    })
+                }else{
+                    res.json({
+                        success: false,
+                        message: 'Title not set (Title is mandatory)',
+                    })
+                }
+            }catch(err){
+                res.json({
+                    success: false,
+                    message: 'internal error',
+                    error: err
+                })
+            }
+        }
+    ])
+})
+
 
 module.exports = route;
 
